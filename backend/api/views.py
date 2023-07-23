@@ -9,8 +9,6 @@ from products.serializers import ProductSerializer
 def api_home(request,*args,**kwargs):
     serializer = ProductSerializer(data=request.data)
     if serializer.is_valid():
-
-        print(serializer.data)
         serializer.save()
         data = serializer.data 
         return Response(data)
