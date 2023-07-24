@@ -9,12 +9,14 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
+from .permissions import IsStaffEditorPermission
+from api.authentication import TokenAuthentication
+
 
 class ProductListCreateApiView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    authentication_classes = [authentication.SessionAuthentication]
-    permission_classes = [permissions.DjangoModelPermissions]
+    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
 
     def perform_create(self, serializer):
         # serializer.save(owner=self.request.user)
@@ -30,6 +32,7 @@ product_list_create_view = ProductListCreateApiView.as_view()
 class ProductDetailView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
 
 
 product_detail_view = ProductDetailView.as_view()
@@ -38,8 +41,9 @@ product_detail_view = ProductDetailView.as_view()
 class ProductUpdateView(generics.UpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [permissions.DjangoModelPermissions]
+    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
     lookup_field = 'pk'
+    
 
     def perform_update(self,serializer):
         instance = serializer.save()
@@ -52,6 +56,7 @@ product_update_view = ProductUpdateView.as_view()
 class ProductDeleteView(generics.DestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
 
     def perform_destroy(self,instance):
         super().perform_destroy(instance)
