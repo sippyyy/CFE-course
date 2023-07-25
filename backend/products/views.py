@@ -17,6 +17,7 @@ class ProductListCreateApiView(StaffEditorPermissionMixin,
     serializer_class = ProductSerializer
     def perform_create(self, serializer):
         # serializer.save(owner=self.request.user)
+        email = serializer.validated_data.pop('email')
         title = serializer.validated_data['title']
         content = serializer.validated_data['content']
         if content is None:
@@ -119,6 +120,5 @@ def product_alt_view(request,pk=None):
             if content is None:
                 content = title
             serializer.save(content=content)
-            print(serializer.data)
             return Response(serializer.data)
         return Response({"invalid":"invalid data"},status = 400)
