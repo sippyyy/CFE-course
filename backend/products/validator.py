@@ -9,4 +9,4 @@ def validate_title(value):
     return value
 
 
-unique_title_validator = UniqueValidator(queryset=Product.objects.all())
+unique_title_validator = UniqueValidator(queryset=Product.objects.all(),lookup='iexact')
