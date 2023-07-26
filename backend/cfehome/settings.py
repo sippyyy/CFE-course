@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     'api.apps.ApiConfig',
     'products.apps.ProductsConfig',
+    'search.apps.SearchConfig',
     'rest_framework.authtoken'
 ]
 
