@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'products.apps.ProductsConfig',
     'search.apps.SearchConfig',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'algoliasearch_django',
 ]
 
 MIDDLEWARE = [
@@ -140,3 +141,8 @@ REST_FRAMEWORK = {
     'PAGE_SIZE':10
 }
 
+ALGOLIA = {
+    'APPLICATION_ID': 'BNO1XNMAW1',
+    'API_KEY': 'e18211d8f486214607676afa12c4f41d',
+    'INDEX_PREFIX':'sippy'
+}
