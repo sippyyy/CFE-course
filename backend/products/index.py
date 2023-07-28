@@ -5,6 +5,6 @@ from .models import Product
 
 @register(Product)
 class ProductIndex(AlgoliaIndex):
-    fields = ('title', 'content','price','user','sale_price','public')
+    fields = ('title', 'body','price','user','sale_price','public')
     settings = {'searchableAttributes': ['title'], 'attributesForFaceting': ['public','user']}
     tags = 'tag'

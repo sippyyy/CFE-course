@@ -36,6 +36,14 @@ class Product(models.Model):
     price =models.DecimalField(max_digits=15,decimal_places=2,default=99.99)
     public = models.BooleanField(default=True)
     objects = ProductManager()
+    
+    @property
+    def body(self):
+        return self.content
+    
+    @property
+    def path(self):
+        return f'api/products/{self.pk}'
 
     def is_public(self):
         return self.public
