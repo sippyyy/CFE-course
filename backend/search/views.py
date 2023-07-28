@@ -27,9 +27,14 @@ class SearchListView(generics.GenericAPIView):
         user = None
         if request.user.is_authenticated:
             user = request.user.username
-        if not query:
-            return Response('',status=400)
         results = client.perform_search(query=query,tags=tags,user=user)
         return Response(results)
+    
+    
+    # def get(self,request,*args,**kwargs):
+    #     query = request.GET.get('q')
+    #     tags = request.GET.getlist('tag')
+    #     results = client.perform_search(query,tags=tags)
+    #     return Response(results)
 
 search_list_view = SearchListView.as_view()
