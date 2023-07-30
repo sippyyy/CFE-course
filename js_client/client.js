@@ -1,9 +1,13 @@
 const loginForm = document.getElementById('login-form')
 const productList = document.getElementById('product-list')
+const searchForm = document.getElementById('search-form')
 const baseEndpoint = "http://localhost:8000/api"
 if (loginForm) {
-    // handle this login form
     loginForm.addEventListener('submit', handleLogin)
+}
+
+if (searchForm) {
+    searchForm.addEventListener('submit', handleSearch)
 }
 
 function handleLogin(event) {
@@ -25,6 +29,50 @@ function handleLogin(event) {
     })
     .then(authData => {
         handleAuthData(authData,getProductList)
+    })
+    .catch(err=> {
+        console.log('err', err)
+    })
+}
+
+function handleSearch(event) {
+    event.preventDefault()
+
+    let forData = new FormData(searchForm)
+    let data = Object.fromEntries(forData)
+    let params = new URLSearchParams(data)
+
+    const SearchEndpoint = `${baseEndpoint}/search/?${params}`
+
+    const headers = {
+        "Content-Type": "application/json",
+    }
+
+    const authToken = localStorage.getItem('access')
+
+    if(authToken){
+        headers['Authorization'] = `Bearer ${authToken}`
+    }
+
+    const options = {
+        method: "GET",
+        headers: headers,
+    }
+    fetch(SearchEndpoint, options) //  Promise
+    .then(response=>{
+        return response.json()
+    })
+    .then(data => {
+        console.log(data);
+        const tokenIsValid = isTokenValid(data.code)
+        console.log(tokenIsValid);
+        if(tokenIsValid && productList){
+            if(data&&data.hits){
+                renderProduct(data.hits)
+            }else{
+                productList.innerHTML = "<li>No product found</li>"
+            }
+        }
     })
     .catch(err=> {
         console.log('err', err)
@@ -91,18 +139,23 @@ const renderProduct = (data)=>{
 
 const validateJWTToken = ()=>{
     const validate_endpoint = `${baseEndpoint}/token/verify/`
-    const bodyVerify = JSON.stringify({token : localStorage.getItem('access')})
-    const options = getFetchOptions('POST',bodyVerify);
-    fetch(validate_endpoint, options)
-    .then(res=>res.json())
-    .then(data => {
-        const token_valid = isTokenValid(data?.code??'')
-        if(token_valid) {
-            getProductList()
-        }else{
-            refreshToken()
-        }
-    })
+    const token  = localStorage.getItem('access')
+    if(token){
+        const bodyVerify = JSON.stringify({token : token})
+        const options = getFetchOptions('POST',bodyVerify);
+        fetch(validate_endpoint, options)
+        .then(res=>res.json())
+        .then(data => {
+            const token_valid = isTokenValid(data?.code??'')
+            if(token_valid) {
+                getProductList()
+            }else{
+                refreshToken()
+            }
+        })
+    }else{
+        alert("You have to login to see product list")
+    }
 }
 
 const refreshToken = ()=>{
